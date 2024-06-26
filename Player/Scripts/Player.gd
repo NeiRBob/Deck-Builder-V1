@@ -2,38 +2,32 @@ class_name Player extends CharacterBody2D
 
 var cardinal_direction : Vector2 = Vector2.DOWN
 var direction : Vector2 = Vector2.ZERO
-var move_speed : float = 100.0
-var state : String = "idle"
 
-@onready var animation_player : AnimationPlayer = $AnimationPlayer
-@onready var sprite : Sprite2D = $Sprite2D
+@onready var animation_player: AnimationPlayer = $AnimationPlayer
+@onready var sprite: Sprite2D = $Sprite2D
+@onready var state_machine : PlayerStateMachine = $StateMachine
+
 
 # Called when the node enters the scene tree for the first time.
 func _ready():
-	pass # Replace with function body.
-
-
-# Called every frame. 'delta' is the elapsed time since the previous frame.
-func _process(delta):
-	
-	direction.x = Input.get_action_strength("Right") - Input.get_action_strength("Left")
-	direction.y = Input.get_action_strength("Down") - Input.get_action_strength("Up")
-	
-	velocity = direction * move_speed
-	
-	if SetState() == true || SetDirection() == true:
-		
-		UpdateAnimation()
-	
+	state_machine.Initialize(self)
+	sprite.scale = Vector2(1, 1)
 	pass
 
 
-func _physics_process(delta):
+# Called every frame. 'delta' is the elapsed time since the previous frame.
+func _process( delta ):
+	direction.x = Input.get_action_strength("Right") - Input.get_action_strength("Left")
+	direction.y = Input.get_action_strength("Down") - Input.get_action_strength("Up")
+	pass
+
+
+func _physics_process( delta ):
 	move_and_slide()
 
 
 func SetDirection() -> bool:
-	var new_dir : Vector2 = cardinal_direction
+	var new_dir: Vector2 = cardinal_direction
 	if direction == Vector2.ZERO:
 		return false
 	
@@ -50,17 +44,9 @@ func SetDirection() -> bool:
 	return true
 
 
-func SetState() -> bool:
-	var new_state : String = "idle" if direction == Vector2.ZERO else "walk"
-	if new_state == state:
-		return false
-	state = new_state
-	return true
-
-
-func UpdateAnimation() -> void:
+func UpdateAnimation( state : String ) -> void:
 	animation_player.play( state + "_" + AnimDirection() )
-	pass 
+
 
 func AnimDirection() -> String:
 	if cardinal_direction == Vector2.DOWN:
@@ -69,22 +55,3 @@ func AnimDirection() -> String:
 		return "up"
 	else:
 		return "side"
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
