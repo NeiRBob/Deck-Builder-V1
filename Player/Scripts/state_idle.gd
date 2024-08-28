@@ -1,17 +1,22 @@
 class_name State_Idle extends State
 
 
+func _ready():
+	pass
+
+
 func Enter() -> void:
 	player.UpdateAnimation("idle")
 	pass
 
 
-func Exit() -> void:
+func Exit() -> void:	
 	pass
 
 
 func Process( _delta : float ) -> State:
 	return null
+
 
 func Physics( _delta : float ) -> State:
 	return null
